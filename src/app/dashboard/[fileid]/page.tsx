@@ -33,7 +33,7 @@ const page = async ({params}:PageProps) => {
       <div className="mx-auto max-w-8xl w-full grow lg:flex xl:px-2">
         <div className="flex-1 xl:flex">
           <div className="px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
-            <PdfRenderer/>
+            <PdfRenderer url={file.url}/>
           </div>
         </div>
 

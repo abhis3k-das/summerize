@@ -38,7 +38,7 @@ const CustomDropZone = () =>{
     },500)
     return interval;
   }
-  return <Dropzone multiple={false} onDrop={async(acceptedFiles)=>{
+  return <Dropzone onError={()=> close()} multiple={false} onDrop={async(acceptedFiles)=>{
       setIsUploading(true);
       setUploadProgress(0);
       const progressInterval = startStimulatedProgress();
@@ -65,9 +65,6 @@ const CustomDropZone = () =>{
           variant : 'destructive',
         })
       }
-
-
-
 
       clearInterval(progressInterval);
       setUploadProgress(100);
