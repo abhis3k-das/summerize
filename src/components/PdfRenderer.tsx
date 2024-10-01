@@ -26,6 +26,7 @@ interface PdfRendererProps {
 
 const PdfRenderer = ({url}:PdfRendererProps) => {
 
+  const {toast} = useToast();
   const [numPages , setNumPages] = useState<number | undefined>();
   const [currPage , setCurrPage] = useState<number>(1);
   const [scale , setScale] = useState<number>(1);
@@ -33,52 +34,68 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
   const [renderedScale , setRenderedScale] = useState<number | null>(null);
   const isLoading = renderedScale !== scale;
  
-  const {toast} = useToast();
-  const {width , ref} = useResizeDetector();
   const customFieldValidator = z.object({
     page:z.string().refine((num)=>Number(num) > 0 && Number(num)<= (numPages ? numPages : 0))
   })
-
+  
   type TCustomPageValidator = z.infer<typeof customFieldValidator>
-
+  
   const { register , handleSubmit , formState : {errors} , setValue } = useForm<TCustomPageValidator>({
     defaultValues : {
       page : "1"
     },
     resolver : zodResolver(customFieldValidator)
   });
+  
+  const {width , ref} = useResizeDetector();
 
   const handlePageSubmit = ({page}:TCustomPageValidator) =>{
     setCurrPage(Number(page));
     setValue("page",String(page));
   }
+  
 
   return (
-    <div className='w-full rounded-md shadow flex flex-col items-center'>
-      <div className="h-14 w-full border-b border-zinc-200 flex items-center justify-between px-2">
-        <div className="flex items-center gap-1.5">
-          <Button variant="ghost" aria-label='previous page' onClick={()=>{
-            setCurrPage(prev=>prev-1>1?prev-1:1)
-            setValue("page",String(currPage - 1))
-            }} disabled={currPage<=1}>
+    <div className='w-full bg-white rounded-md shadow flex flex-col items-center'>
+      <div className='h-14 w-full border-b border-zinc-200 flex items-center justify-between px-2'>
+        <div className='flex items-center gap-1.5'>
+          <Button 
+            disabled={currPage<=1}
+            onClick={()=>{
+              setCurrPage(prev=>prev-1>1?prev-1:1)
+              setValue("page",String(currPage - 1))
+            }}
+            variant="ghost"
+            aria-label='previous page'
+          >
             <ChevronDown className='h-4 w-4'/>
           </Button>
 
-          <div className="flex items-center gap-1.5">
-            <Input {...register("page")} className={cn('w-12 h-8' , errors.page && 'focus-visible:ring-red-500')} onKeyDown={(event)=>{
-              if(event.key === 'Enter'){
-                handleSubmit(handlePageSubmit)();
-              }
-            }}/>
+          <div className='flex items-center gap-1.5'>
+            <Input 
+              {...register("page")}
+              className={cn('w-12 h-8' , errors.page && 'focus-visible:ring-red-500')}
+              onKeyDown={(event)=>{
+                if(event.key === 'Enter'){
+                  handleSubmit(handlePageSubmit)();
+                }
+              }}
+            />
             <p className='text-zinc-700 text-sm space-x-1'>
               <span>/</span>
               <span>{numPages ?? "x"}</span>
             </p>
           </div>
-          <Button disabled={numPages === undefined || currPage === numPages} variant="ghost" aria-label='next page' onClick={()=>{
-            setCurrPage(prev=>prev+1< (numPages ? numPages : 0) ? prev+1 : prev)
-            setValue("page",String(currPage + 1))
-            }} >
+
+          <Button 
+            disabled={numPages === undefined || currPage === numPages}
+            onClick={()=>{
+              setCurrPage(prev=>prev+1< (numPages ? numPages : 0) ? prev+1 : prev)
+              setValue("page",String(currPage + 1))
+            }} 
+            variant="ghost"
+            aria-label='next page'
+            >
             <ChevronUp className='h-4 w-4'/>
           </Button>
         </div>
@@ -114,8 +131,10 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
       </div>
 
       <div className="flex-1 w-full max-h-screen">
-        <SimpleBar autoHide={false} className='max-h-[calc(100vh - 10rem)]'>
-          <div className="" ref={ref}>
+        <SimpleBar 
+          autoHide={false}
+          className='max-h-[calc(100vh-10rem)]'>
+          <div ref={ref}>
             <Document file={url} className='max-h-full'
               onLoadSuccess={({numPages})=>setNumPages(numPages)}
               loading={
@@ -130,10 +149,10 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
               })
             }}>
               {
-                isLoading && renderedScale ? 
-                <Page pageNumber={currPage} width={width ? width : 1} scale={scale} rotate={rotation} key={"@" + renderedScale}/> : null
+                isLoading && renderedScale ? (
+                <Page pageNumber={currPage} width={width ? width : 1} scale={scale} rotate={rotation} key={"@" + renderedScale}/>) : null
               }
-              <Page className={cn(isLoading ? "hidden" : "")} pageNumber={currPage} width={width ? width : 1} scale={scale} rotate={rotation} loading={
+              <Page  className={cn(isLoading ? "hidden" : "")} pageNumber={currPage} width={width ? width : 1} scale={scale} rotate={rotation} loading={
                 <div className='flex justify-center'>
                   <Loader2 className='my-24 h-6 w-6 animate-spin'/>
                 </div>
