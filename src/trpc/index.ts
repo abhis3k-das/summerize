@@ -34,6 +34,7 @@ export const appRouter = router({
     return { success: true };
   }),
   getUserFiles: privateProcedure.query(async ({ ctx }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { userId, user } = ctx;
 
     return await db.file.findMany({

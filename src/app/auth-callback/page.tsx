@@ -10,6 +10,7 @@ const Page = () => {
   const searchParams = useSearchParams();
   const origin = searchParams.get('origin');
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data, isLoading, error } = trpc.authCallback.useQuery(undefined,{
     retry:true,
     retryDelay : 500,
@@ -25,7 +26,7 @@ const Page = () => {
     if (error?.data?.code === 'UNAUTHORIZED') {
       router.push("/sign-in");
     }
-  }, [error]);
+  }, [error,router]);
   
   
   return (
