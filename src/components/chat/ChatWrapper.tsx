@@ -1,24 +1,25 @@
 "use client"
 import React from 'react'
-import Messages from '../Messages'
+import Messages from './Messages'
 import ChatInput from './ChatInput'
 import { trpc } from '@/app/_trpc/client'
 import { ChevronLeft, Loader2, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import { buttonVariants } from '../ui/button'
+import { ChatContextProvider } from './ChatContext'
 
 interface ChatWrapperProps {
   fileId : string,
 }
 
 const ChatWrapper = ({fileId} : ChatWrapperProps) => {
-  const { data , isLoading } = trpc.getFileUploadStatus.useQuery(
+  const { data , isLoading } =  trpc.getFileUploadStatus.useQuery(
     {
       fileId,
     },
     {
       refetchInterval: (data : any) => 
-        data?.status === 'SUCCESS' || data?.status === 'FAILED' ? false : 500
+         data?.state?.data?.status === 'SUCCESS' || data?.state?.data?.status === 'FAILED' ? false : 500
     }
   )
 
@@ -63,12 +64,14 @@ const ChatWrapper = ({fileId} : ChatWrapperProps) => {
 
   
   return (
-    <div className='relative min-h-full divide-zinc-200 flex flex-col justify-between gap-2 divide-y'>
-      <div className="flex-1 justify-between flex flex-col mb-28">
-        <Messages/>
+    <ChatContextProvider fileId={fileId}>
+      <div className='relative min-h-full divide-zinc-200 flex flex-col justify-between gap-2 divide-y'>
+        <div className="flex-1 justify-between flex flex-col mb-28">
+          <Messages fileId={fileId}/>
+        </div>
+        <ChatInput/>
       </div>
-      <ChatInput/>
-    </div>
+    </ChatContextProvider>
   )
 }
 
