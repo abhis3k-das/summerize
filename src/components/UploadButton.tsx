@@ -10,13 +10,13 @@ import { useToast } from '@/hooks/use-toast';
 import { trpc } from '@/app/_trpc/client';
 import { useRouter } from 'next/navigation';
 
-const CustomDropZone = () =>{
+const CustomDropZone = ({isSubscribed}:{isSubscribed:boolean}) =>{
 
   const router = useRouter();
   const [isUploading , setIsUploading] = useState<boolean | null>(false)
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const {toast} = useToast();
-  const { startUpload } = useUploadThing("pdfUploader");
+  const { startUpload } = useUploadThing(isSubscribed ? "proPlanUploader" : "freePlanUploader");
   const {mutate : startPolling } = trpc.getFile.useMutation({
     onSuccess:(file) =>{
       router.push(`/dashboard/${file.id}`)
@@ -79,7 +79,7 @@ const CustomDropZone = () =>{
               <p className="mb-2 text-sm text-zinc-700">
                 <span className="font-semibold">Click to upload</span> or <span className="font-semibold">Drag and drop</span>
               </p>
-              <p className='text-xs text-zinc-500'>PDF (upto 4MB)</p>
+              <p className='text-xs text-zinc-500'>PDF (upto {isSubscribed ? '16' : '4'}MB)</p>
             </div>
             {acceptedFiles && acceptedFiles[0] ? (<div className='max-w-xs bg-white flex items-center rounded-md outline outline-[1px] outline-zinc-200 divide-x divide-zinc-200'>
               <div className='px-3 py-2 h-full grid place-items-center'>
@@ -109,7 +109,7 @@ const CustomDropZone = () =>{
   </Dropzone>
 }
 
-const UploadButton = () => {
+const UploadButton = ({isSubscribed}:{isSubscribed:boolean}) => {
   const [isOpen , setIsOpen] = useState<boolean>(false);
   return (
     <Dialog open={isOpen} onOpenChange={(visible) => {
@@ -121,7 +121,7 @@ const UploadButton = () => {
         <Button>Upload PDF</Button>
       </DialogTrigger>
       <DialogContent>
-        <CustomDropZone/>
+        <CustomDropZone isSubscribed={isSubscribed}/>
       </DialogContent>
     </Dialog>
   )
