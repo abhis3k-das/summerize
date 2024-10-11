@@ -4,7 +4,6 @@ import { ArrowRight, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { boolean } from "zod";
 
 interface MobileNavProp {
     isAuth : boolean,
