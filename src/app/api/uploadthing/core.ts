@@ -60,6 +60,7 @@ export const ourFileRouter = {
                         id: createdFile.id,
                     }
                 })
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (err) {
                 await db.file.update({
                     data: {
