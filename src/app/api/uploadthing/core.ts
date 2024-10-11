@@ -13,7 +13,6 @@ export const ourFileRouter = {
         .middleware(async () => {
             const { getUser } = getKindeServerSession();
             const user = await getUser();
-            console.log("user", user);
             if (!user || !user.id) throw Error('UnAuthorized');
             return { userId: user.id }
         })
@@ -62,7 +61,6 @@ export const ourFileRouter = {
                     }
                 })
             } catch (err) {
-                console.log(err)
                 await db.file.update({
                     data: {
                         uploadStatus: "FAILED",
