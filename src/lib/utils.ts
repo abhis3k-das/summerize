@@ -45,7 +45,6 @@ export function constructMetadata({
 		},
 		icons,
 		metadataBase: new URL('https://summerize-khaki.vercel.app'),
-		themeColor: '#fff',
 		...(noindex && {
 			robots: {
 				index: false,

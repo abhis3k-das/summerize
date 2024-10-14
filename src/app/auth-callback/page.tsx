@@ -10,10 +10,13 @@ const PageContent = () => {
   const origin = searchParams.get('origin');
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data, isLoading, error } = trpc.authCallback.useQuery(undefined, {
+  const result = trpc.authCallback.useQuery(undefined, {
     retry: true,
     retryDelay: 500,
+
   });
+
+  const { data, error , failureReason , failureCount} = result;
 
   useEffect(() => {
     if (data?.success) {
@@ -27,6 +30,16 @@ const PageContent = () => {
     }
   }, [error, router]);
 
+  useEffect(()=>{
+    if(failureCount > 1){
+      const code = failureReason?.data?.code;
+      if(code === 'UNAUTHORIZED'){
+        router.push("/sign-in");
+      }
+    }
+  },[failureReason , failureCount])
+
+  
   return (
     <div className='w-full mt-24 flex justify-center'>
       <div className="flex flex-col items-center gap-2">

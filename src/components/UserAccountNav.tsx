@@ -16,7 +16,7 @@ interface UserAccountNavProps {
     name : string,
     imgUrl : string,
 }
-const UserAccountNav = async({email,imgUrl,name} : UserAccountNavProps) => {
+const UserAccountNav = async({email,name} : UserAccountNavProps) => {
   
   const subscriptionPlan = await getUserSubscriptionPlan();
   return (
@@ -26,21 +26,10 @@ const UserAccountNav = async({email,imgUrl,name} : UserAccountNavProps) => {
         className='overflow-visible'>
         <Button className='rounded-full h-8 w-8 aspect-square bg-slate-400'>
           <Avatar className='relative w-8 h-8'>
-            {imgUrl ? (
-              <div className='relative aspect-square h-full w-full'>
-                <Image
-                  fill
-                  src={imgUrl}
-                  alt='profile picture'
-                  referrerPolicy='no-referrer'
-                />
-              </div>
-            ) : (
               <AvatarFallback>
                 <span className='sr-only'>{name}</span>
                 <Icons.user className='h-4 w-4 text-zinc-900' />
               </AvatarFallback>
-            )}
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
