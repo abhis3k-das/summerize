@@ -58,10 +58,7 @@ const Dashboard = ({subscriptionPlan}:PageProps) => {
                   <Plus className="h-4 w-4"/>
                   {format(new Date(file.createdAt),"MMM yyyy")}
                 </div>
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4"/>
-                  mocked
-                </div>
+                <div></div>
                 <Button onClick={()=>deleteFile({ id:file.id } )} size="sm" className='w-full' variant="destructive">
                   { currentlyDeletingFile === file.id ? ( <Loader2 className='h-4 w-4 animate-spin'/> ) : <Trash className='h-4 w-4'/> }
                 </Button>
